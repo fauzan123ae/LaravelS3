@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\api\TaskController as ApiController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +27,7 @@ Route::view('profile', 'profile')
 
 Route::resource('tasks', TaskController::class);
 
-Route::resource('ApiTask', ApiController::class);
+
 
 require __DIR__.'/auth.php';
 
