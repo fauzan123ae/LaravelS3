@@ -12,6 +12,10 @@ class Task extends Model
 {
     use HasFactory, SoftDeletes; // Use the SoftDeletes trait
 
+    protected $hidden = [
+        "updated_at",
+        "created_at",
+    ];
     // Specify the fillable attributes (mass assignable)
     protected $fillable = [
         'title',
