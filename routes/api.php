@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\authController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\TaskController as ApiController;
@@ -17,5 +18,13 @@ use App\Http\Controllers\api\TaskController as ApiController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResource('ApiTask', ApiController::class);
+
+// Logout
+
+Route::post('logoutapi', [authController::class,"logoutapi"]);
+// Login
+Route::post('login', [authController::class, "login"]);
 
 Route::apiResource('ApiTask', ApiController::class);

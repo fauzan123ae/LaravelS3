@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Resources\Apiresource;
+use Illuminate\Support\Facades\Validator;
 
 class TaskController extends Controller
 {
@@ -23,7 +24,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+       // 
     }
 
     /**
@@ -31,7 +32,27 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'status' => 'required|in:pending,in_progress,completed',
+            'due_date' => 'required|date',
+            'category_id' => 'required|exists:categories,id', // Validasi kategori
+            'user_id' => 'required',
+        ]);
+
+        $store = Task::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'status' => $request->status,
+            'due_date' => $request->due_date,
+            'category_id' => $request->category_id,
+            'user_id' => $request->user_id,
+        ]);
+
+        return new Apiresource (
+            $store, "berhasil", "true"
+        );
     }
 
     /**
