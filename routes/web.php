@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,5 +26,6 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 Route::resource('tasks', TaskController::class);
+
 
 require __DIR__.'/auth.php';
