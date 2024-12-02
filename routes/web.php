@@ -28,4 +28,10 @@ Route::view('profile', 'profile')
 Route::resource('tasks', TaskController::class);
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> d1466008155c9fdac68c50282f68b8bdd982c6c4
 require __DIR__.'/auth.php';
+
+
