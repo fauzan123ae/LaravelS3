@@ -1,87 +1,67 @@
 <?php
+namespace App\Http\Controllers;
 
-namespace App\Http\Controllers\api;
-
-use App\Http\Controllers\Controller;
-use App\Http\Resources\Apiresource;
-<<<<<<< HEAD
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-=======
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
->>>>>>> d1466008155c9fdac68c50282f68b8bdd982c6c4
 
-class authController extends Controller
+class AuthController extends Controller
 {
-    public function login(Request $request)
-<<<<<<< HEAD
+    // Menampilkan form registrasi
+    public function showRegistrationForm()
     {
-        $request->validate([
+        return view('auth.register');
+    }
+
+    // Proses registrasi
+    public function register(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
+        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silahkan login.');
+    }
+
+    // Menampilkan form login
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    // Proses login
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return new Apiresource(
-                401,
-                "Login Gagal",
-                false
-            );
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('tasks.index'); // Sesuaikan dengan halaman setelah login
         }
 
-        $token = $user->createToken('auth-token', 
-        $user->getAllPermissions()->pluck('name')->toArray())->plainTextToken;
-
-        return new Apiresource(
-            ['token' => $token],
-            "Login Berhasil",
-            true
-        );
-    }
-
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Log Out Sukses',
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
         ]);
     }
-}
-=======
-{
-    $request->validate([
-        "email" => "required|email",
-        "password" => "required",
-    ]);
 
-    $user = User::where("email", $request->email)->first();
-
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        return new Apiresource(401, "Login Gagal", false);
-    }
-
-    $token = $user->createToken('auth-token', $user->getAllPermissions()->pluck('name')->toArray())->plainTextToken;
-
-    return new Apiresource(['token' => $token], "Login berhasil", true);
-}
-
+    // Proses logout
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return new Apiresource(
-            null, "Log Out Berhasil", true
-        );
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 }
-    
-
-
-
->>>>>>> d1466008155c9fdac68c50282f68b8bdd982c6c4
